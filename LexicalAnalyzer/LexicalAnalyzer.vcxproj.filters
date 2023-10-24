@@ -21,5 +21,11 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt" />
+    <Text Include="complicated.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Console.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

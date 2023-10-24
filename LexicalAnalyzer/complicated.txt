@@ -1,0 +1,86 @@
+// sample.cpp
+
+# include <iostream>
+# include <string>
+
+using namespace std;
+
+// Global variable
+int globalVar = 5;
+
+// Function prototype
+double sampleFunction(double, double);
+
+enum Days { MONDAY, TUESDAY, WEDNESDAY };
+
+class ExampleClass {
+private:
+    float classVar = 10.5;
+
+public:
+    void classFunc() {
+        cout << "Inside class function" << endl;
+    }
+};
+
+int main() {
+    // Local variable declaration
+    int a = 3;
+    double b = 4.5;
+    string sampleString = "Hello, world!";
+    char ch = 'A';
+
+    cout << sampleString << endl; // String literals and stream insertion operator
+    cout << "Value of ch: " << ch << endl; // Character literal
+
+    // Mathematical operations
+    int sum = a + globalVar;
+    int diff = a - (int)b;
+    double prod = a * b;
+    double div = b / a;
+    int mod = a % 2;
+
+    // Logical operations
+    bool result = (a == 3) && (b > 4);
+    bool notResult = !result;
+    bool orResult = (a == 3) || (b < 4);
+
+    // Bitwise operations
+    int xorRes = a ^ globalVar;
+    int orRes = a | globalVar;
+    int andRes = a & globalVar;
+    int leftShift = a << 1;
+    int rightShift = globalVar >> 1;
+
+    // Loop
+    for (int i = 0; i < 5; ++i) {
+        cout << "Looping: " << i << endl;
+    }
+
+    // Conditional
+    if (a > b) {
+        cout << "a is greater than b" << endl;
+    } else {
+        cout << "b is greater or equal to a" << endl;
+    }
+
+    // Calling a function
+    double funcResult = sampleFunction(a, b);
+    cout << "Function result: " << funcResult << endl;
+
+    // Using class
+    ExampleClass ec;
+    ec.classFunc();
+
+    // Using enum
+    Days today = MONDAY;
+    if (today == MONDAY) {
+        cout << "Today is Monday!" << endl;
+    }
+
+    return 0;
+}
+
+double sampleFunction(double x, double y) {
+    return x + y;
+}
