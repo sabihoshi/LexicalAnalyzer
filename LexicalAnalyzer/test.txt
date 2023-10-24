@@ -1,0 +1,14 @@
+# include < iostream >
+using namespace std ;
+int main ( )
+{
+    int a = 3 ;
+    int b = 6 ;
+    int c = 9 ;
+    int d = a + b + c ;
+	char e = 'a' ;
+	cout << "hello" << e << endl ;
+
+    cout << d ;
+    return 0 ;
+}
