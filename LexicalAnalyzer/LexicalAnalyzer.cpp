@@ -27,9 +27,6 @@ class LexicalAnalyzer
         "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using",
         "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq"
     };
-    std::unordered_set<std::string> _preprocessor = {
-        "#pragma", "#define", "#undef", "#include", "#if", "#ifdef", "#ifndef", "#else", "#endif"
-    };
 
     std::unordered_set<std::string> _symbols = {"#", "<", ">", "(", ")", "{", "}", ";", ","};
     std::unordered_set<std::string> _operators = {
@@ -71,7 +68,7 @@ public:
             {
                 category = "String Literal";
             }
-            else if (_preprocessor.contains(token) || token[0] == '<' && token[token.length() - 1] == '>')
+            else if (token[0] == '#' || token[0] == '<' && token[token.length() - 1] == '>')
             {
                 category = "Preprocessor";
             }
