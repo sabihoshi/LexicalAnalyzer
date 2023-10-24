@@ -25,7 +25,9 @@ class LexicalAnalyzer
         "requires", "return", "short", "signed", "sizeof", "static", "static_assert",
         "static_cast", "struct", "switch", "template", "this", "thread_local", "throw",
         "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using",
-        "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq"
+        "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq", "pragma",
+        "define", "undef", "ifdef", "ifndef", "if", "ifn", "endif", "elifdef", "elifndef", "include",
+        "line", "error", "warning", "defined", "__has_include", "__has_cpp_attribute", "export", "module"
     };
 
     std::unordered_set<std::string> _symbols = {"#", "<", ">", "(", ")", "{", "}", ";", ","};
@@ -52,7 +54,7 @@ public:
         }
 
         std::regex rgx(
-            R"(\/\/.+$|\/\*[\s\S]+\*\/|\#\s*(?:pragma|define|undef|include|ifn?(def)?|else|endif)(?=\s)|<\s*[\w\.]+\s*>|R["]\(.+\)["]|["](?:\\.|[^"\n])*["]|\b[^;\s{}()\[\]<>#*+\-\/=:,]+\b|(\.)|(\+\+)|(--)|(<<)|(>>)|(&&)|(\|\|)|(::)|(([*+\-\/&|^]|<<|>>)=)|(->)|[;'{}()\[\]<>#*+\-=,])");
+            R"(\/\/.+$|\/\*[\s\S]+\*\/|R["]\(.+\)["]|["](?:\\.|[^"\n])*["]|\b[^;\s{}()\[\]<>#*+\-\/=:,]+\b|(\.)|(\+\+)|(--)|(<<)|(>>)|(&&)|(\|\|)|(::)|(([*+\-\/&|^]|<<|>>)=)|(->)|[;'{}()\[\]<>#*+\-=,])");
         std::smatch match;
 
         while (std::regex_search(content, match, rgx))
@@ -64,13 +66,10 @@ public:
             {
                 category = "Keyword";
             }
-            else if (token[0] == '"' && token[token.length() - 1] == '"' || token.substr(0, 3) == "R\"(" && token.substr(token.length() - 2, 2) == ")\"")
+            else if (token[0] == '"' && token[token.length() - 1] == '"' ||
+                token.substr(0, 3) == "R\"(" && token.substr(token.length() - 2, 2) == ")\"")
             {
                 category = "String Literal";
-            }
-            else if (token[0] == '#' || token[0] == '<' && token[token.length() - 1] == '>')
-            {
-                category = "Preprocessor";
             }
             else if (std::isdigit(token[0]) || token[0] == '-' ||
                 std::regex_match(token, std::regex("[-]?[0-9]*\\.[0-9]+([uUlLzZ]|[uU]?(ll|LL)|f)?")) ||
@@ -108,7 +107,7 @@ public:
     void PrintSummary(const std::string& token, const std::string& category)
     {
         std::cout << "┌────────────────────────────────────┐\n";
-        std::cout << "│ " << Center(token + " is a " + category, 34) << " │\n";
+        std::cout << "│ " << Center("[" + token + "]: " + category, 34) << " │\n";
         std::cout << "├────────────────────────────────────┤\n";
         for (auto& [fst, snd] : _tokenLists)
         {
