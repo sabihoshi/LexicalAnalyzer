@@ -1,7 +1,5 @@
 ﻿#pragma execution_character_set("utf-8")
 
-#include "Console.h"
-
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -10,6 +8,8 @@
 #include <unordered_set>
 #include <vector>
 #include <Windows.h>
+
+#include "Console.h"
 
 class LexicalAnalyzer
 {
@@ -25,7 +25,7 @@ class LexicalAnalyzer
         "requires", "return", "short", "signed", "sizeof", "static", "static_assert",
         "static_cast", "struct", "switch", "template", "this", "thread_local", "throw",
         "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using",
-        "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq", "include"
+        "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq"
     };
     std::unordered_set<std::string> _preprocessor = {
         "#pragma", "#define", "#undef", "#include", "#if", "#ifdef", "#ifndef", "#else", "#endif"
@@ -36,22 +36,9 @@ class LexicalAnalyzer
         "+", "-", "*", "/", "=", "!", "&", "|", "<<", ">>", "^", "~", "&&", "||",
         "+=", "-=", "*=", "/=", "&=", "|=", "^=", "<<=", ">>="
     };
-    std::map<std::string, int> _summary;
     std::map<std::string, std::vector<std::string>> _tokenLists;
 
 public:
-    LexicalAnalyzer()
-    {
-        _summary["Keyword"] = 0;
-        _summary["Identifier"] = 0;
-        _summary["Operator"] = 0;
-        _summary["Symbol"] = 0;
-        _summary["Constant"] = 0;
-        _summary["String Literal"] = 0;
-        _summary["Comment"] = 0;
-        _summary["Preprocessor"] = 0;
-    }
-
     void Analyze(const std::string& fileName)
     {
         std::ifstream file(fileName);
@@ -89,7 +76,7 @@ public:
                 category = "Preprocessor";
             }
             else if (std::isdigit(token[0]) || token[0] == '-' ||
-                std::regex_match(token, std::regex("[-]?[0-9]*\\.[0-9]+([uUlLzZ]|ll|LL|)?")) ||
+                std::regex_match(token, std::regex("[-]?[0-9]*\\.[0-9]+([uUlLzZ]|[uU]?(ll|LL)|f)?")) ||
                 std::regex_match(token, std::regex("'.'")))
             {
                 category = "Constant";
@@ -111,7 +98,6 @@ public:
                 category = "Identifier";
             }
 
-            _summary[category]++;
             _tokenLists[category].push_back(token);
             PrintSummary(token, category);
 
@@ -127,9 +113,9 @@ public:
         std::cout << "┌────────────────────────────────────┐\n";
         std::cout << "│ " << Center(token + " is a " + category, 34) << " │\n";
         std::cout << "├────────────────────────────────────┤\n";
-        for (auto& [fst, snd] : _summary)
+        for (auto& [fst, snd] : _tokenLists)
         {
-            std::cout << "│ " << Right(fst + ": " + std::to_string(snd), 34) << " │\n";
+            std::cout << "│ " << Right(fst + ": " + std::to_string(snd.size()), 34) << " │\n";
         }
         std::cout << "└────────────────────────────────────┘\n";
     }
